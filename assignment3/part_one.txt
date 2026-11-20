@@ -1,0 +1,60 @@
+%{
+/*
+ * Name:   STUDENT_NAME
+ * Number: STUDENT_NUMBER
+ *
+ * Assignment 3 - Part 1
+ * A Lex implementation of the wc command: prints the total count of
+ * lines, words, and characters in its input. C style multi-line
+ * comments are completely ignored (none of their characters, including
+ * the '/' and '*' delimiters, are counted). Comments are handled with
+ * the input() technique used in Example 2.23.
+ */
+#include <stdio.h>
+#define TRUE  1
+#define FALSE 0
+
+long lines = 0, words = 0, chars = 0;
+int in_word = FALSE;   /* TRUE while inside a word */
+%}
+
+%option noyywrap nounput
+%%
+
+"/*"    {
+            /* Consume the whole comment without counting anything.
+               in_word is left unchanged, so a comment does not split
+               a word, exactly as if the comment were not there. */
+            int c;
+            int done = FALSE;
+            do {
+                while ( (c = input()) != '*' && c != EOF && c != 0 )
+                    ;
+                if (c == EOF || c == 0) break;      /* unterminated comment */
+                while ( (c = input()) == '*' )
+                    ;
+                if (c == EOF || c == 0) break;
+                if (c == '/') done = TRUE;
+            } while (!done);
+        }
+
+\n                      { lines++; chars++; in_word = FALSE; }
+[ \t\r\f\v]             { chars++; in_word = FALSE; }
+[^ \t\n\r\f\v/]+|"/"    {
+                            chars += yyleng;
+                            if (!in_word) { words++; in_word = TRUE; }
+                        }
+%%
+
+int main(int argc, char *argv[])
+{
+    FILE *fPtr = NULL;
+    /* initialize to NULL to avoid segmentation fault error if no file argument is passed */
+    if ( argc == 2 && (fPtr = fopen(argv[1], "r")) ) {
+        yyin = fPtr;
+    }
+    yylex();
+    fprintf(yyout, "%7ld %7ld %7ld\n", lines, words, chars);
+    if (fPtr) fclose(fPtr);
+    return 0;
+}
