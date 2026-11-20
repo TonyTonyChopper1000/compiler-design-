@@ -1,7 +1,7 @@
 %{
 /*
- * Name:   STUDENT_NAME
- * Number: STUDENT_NUMBER
+ * Name:   Rohit reddy Adevelly
+ * Number: 700777805
  *
  * Assignment 3 - Part 1
  * A Lex implementation of the wc command: prints the total count of

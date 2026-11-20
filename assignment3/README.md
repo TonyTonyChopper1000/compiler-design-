@@ -6,7 +6,7 @@
 | `part_two.txt` | Part 2 scanner. Skips comments with an exclusive start condition (`%x COMMENT`). |
 | `fact.c` | The sample input from the course folder. |
 | `build_submission.py` | Puts your name and number into the files, runs the commands, takes the screenshots and builds the PDFs. |
-| `submission/` | The four files to upload. They still contain the `STUDENT_NAME` / `STUDENT_NUMBER` placeholders. |
+| `submission/` | The four files to upload. They are filled in for Rohit reddy Adevelly (700777805). |
 
 ## Build and run by hand
 
