@@ -1,0 +1,52 @@
+%{
+/*
+ * Name:   Rohit reddy Adevelly
+ * Number: 700777805
+ *
+ * Assignment 3 - Part 2
+ * A Lex implementation of the wc command: prints the total count of
+ * lines, words, and characters in its input. C style multi-line
+ * comments are completely ignored (none of their characters, including
+ * the '/' and '*' delimiters, are counted). Comments are handled with
+ * a Lex exclusive start condition.
+ */
+#include <stdio.h>
+#define TRUE  1
+#define FALSE 0
+
+long lines = 0, words = 0, chars = 0;
+int in_word = FALSE;   /* TRUE while inside a word */
+%}
+
+/* In the Definitions section, declare an exclusive state */
+%x COMMENT
+
+%option noyywrap nounput noinput
+%%
+
+ /* INITIAL state: count lines, words, and characters */
+"/*"                    { BEGIN(COMMENT); }
+\n                      { lines++; chars++; in_word = FALSE; }
+[ \t\r\f\v]             { chars++; in_word = FALSE; }
+[^ \t\n\r\f\v/]+|"/"    {
+                            chars += yyleng;
+                            if (!in_word) { words++; in_word = TRUE; }
+                        }
+
+ /* COMMENT state: discard everything until the closing delimiter.
+    in_word is left unchanged, so a comment does not split a word. */
+<COMMENT>"*/"           { BEGIN(INITIAL); }
+<COMMENT>[^*\n]+        { /* ignore */ }
+<COMMENT>"*"            { /* ignore */ }
+<COMMENT>\n             { /* ignore */ }
+%%
+
+int main(int argc, char *argv[])
+{
+    FILE *fin = NULL;
+    if ( argc == 2 && (fin = fopen(argv[1], "r")) ) { yyin = fin; }
+    yylex();
+    fprintf(yyout, "%7ld %7ld %7ld\n", lines, words, chars);
+    if (fin) { fclose(fin); }
+    return 0;
+}
