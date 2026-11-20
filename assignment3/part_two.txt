@@ -1,6 +1,6 @@
 %{
 /*
- * Name:   Rohit reddy Adevelly
+ * Name:   Rohith reddy Adevelly
  * Number: 700777805
  *
  * Assignment 3 - Part 2
